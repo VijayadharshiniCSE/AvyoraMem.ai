@@ -1,0 +1,41 @@
+services:
+  # ==========================================
+  # 1. AvyoraMem FastAPI AI Backend (Web Service)
+  # ==========================================
+  - type: web
+    name: avyoramem-backend
+    env: python
+    region: oregon
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.0-flash
+
+  # ==========================================
+  # 2. AvyoraMem React + Vite Frontend (Static Site)
+  # ==========================================
+  - type: web
+    name: avyoramem-frontend
+    env: static
+    region: oregon
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE_URL
+        fromService:
+          type: web
+          name: avyoramem-backend
+          property: host

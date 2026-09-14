@@ -30,17 +30,6 @@ app.include_router(presets_router, prefix=settings.API_PREFIX, tags=["Presets & 
 # Serve static directory
 app.mount("/static", StaticFiles(directory=settings.STATIC_DIR), name="static")
 
-@app.get("/")
-async def root():
-    return {
-        "status": "online",
-        "service": settings.APP_NAME,
-        "version": settings.VERSION,
-        "docs_url": "/docs",
-        "vision_ai_ready": True,
-        "gemini_enabled": bool(settings.GEMINI_API_KEY)
-    }
-
 @app.get("/health")
 async def health():
     return {
@@ -49,5 +38,35 @@ async def health():
         "model": settings.GEMINI_MODEL if settings.GEMINI_API_KEY else "algorithmic-fashion-matrix"
     }
 
+# Check if built frontend exists (Unified Render/production deployment)
+from pathlib import Path
+from fastapi.responses import FileResponse
+
+FRONTEND_DIST = Path(__file__).resolve().parent.parent / "frontend" / "dist"
+if FRONTEND_DIST.exists():
+    app.mount("/", StaticFiles(directory=str(FRONTEND_DIST), html=True), name="frontend")
+
+    # SPA catch-all for direct URL refreshes
+    @app.exception_handler(404)
+    async def not_found_spa_handler(request, exc):
+        index_file = FRONTEND_DIST / "index.html"
+        if index_file.exists():
+            return FileResponse(index_file)
+        return {"detail": "Not Found"}
+else:
+    @app.get("/")
+    async def root():
+        return {
+            "status": "online",
+            "service": settings.APP_NAME,
+            "version": settings.VERSION,
+            "docs_url": "/docs",
+            "vision_ai_ready": True,
+            "gemini_enabled": bool(settings.GEMINI_API_KEY)
+        }
+
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    import os
+    port = int(os.environ.get("PORT", 8000))
+    host = os.environ.get("HOST", "0.0.0.0")
+    uvicorn.run("main:app", host=host, port=port, reload=False)

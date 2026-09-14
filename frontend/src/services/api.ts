@@ -1,12 +1,16 @@
 import axios from 'axios';
 import { AnalysisResponse, PresetsResponse, StylingResult, VisualProfile } from '../types/styling';
 
-const API_BASE = '/api';
+// Normalize API base URL: supports both relative proxy (local/unified) and custom backend URL (Render/cloud)
+const RAW_API_URL = import.meta.env.VITE_API_BASE_URL || '';
+const API_SERVER = RAW_API_URL.endsWith('/') ? RAW_API_URL.slice(0, -1) : RAW_API_URL;
+const API_BASE = `${API_SERVER}/api`;
 
 export const api = {
   // Check backend and AI model health
   async getHealth() {
-    const res = await axios.get('/health');
+    const healthUrl = API_SERVER ? `${API_SERVER}/health` : '/health';
+    const res = await axios.get(healthUrl);
     return res.data;
   },
 
