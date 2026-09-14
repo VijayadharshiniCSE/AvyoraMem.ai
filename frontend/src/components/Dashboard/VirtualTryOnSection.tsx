@@ -26,6 +26,7 @@ interface VirtualTryOnSectionProps {
   gender: string;
   userImageUrl?: string | null;
   onCustomizeCategory?: (categoryKey: string, categoryTitle: string) => void;
+  onOpenGame?: () => void;
 }
 
 interface LookVariation {
@@ -44,6 +45,7 @@ export const VirtualTryOnSection: React.FC<VirtualTryOnSectionProps> = ({
   gender,
   userImageUrl,
   onCustomizeCategory,
+  onOpenGame,
 }) => {
   const { t } = useThemeLanguage();
   const [selectedLookId, setSelectedLookId] = useState<string>('signature');
@@ -193,8 +195,18 @@ export const VirtualTryOnSection: React.FC<VirtualTryOnSectionProps> = ({
           </p>
         </div>
 
-        {/* Master Download CTA */}
-        <div className="flex items-center gap-3 w-full lg:w-auto">
+        {/* Action Buttons: 4K Game & Download */}
+        <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
+          {onOpenGame && (
+            <button
+              onClick={onOpenGame}
+              className="flex-1 lg:flex-initial flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-purple-950/60 via-obsidian-850 to-purple-950/60 hover:border-gold-500/50 border border-white/15 text-gold-300 hover:text-white font-semibold text-xs sm:text-sm transition-all hover:scale-105 active:scale-95 shadow-lg"
+            >
+              <Sparkles className="w-4 h-4 text-gold-400 animate-pulse" />
+              <span>🎮 4K Makeover Studio Game</span>
+            </button>
+          )}
+
           <button
             onClick={handleDownloadOutfit}
             disabled={isExporting}

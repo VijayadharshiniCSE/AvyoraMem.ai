@@ -19,6 +19,8 @@ import { LookbookGrid } from './components/Dashboard/LookbookGrid';
 import { SwapModal } from './components/Dashboard/SwapModal';
 import { BlueprintModal } from './components/Dashboard/BlueprintModal';
 import { VirtualTryOnSection } from './components/Dashboard/VirtualTryOnSection';
+import { SessionInspirationExplorer } from './components/Dashboard/SessionInspirationExplorer';
+import { GlamourStudioGame } from './components/Dashboard/GlamourStudioGame';
 import { TwinkleCursor } from './components/TwinkleCursor';
 import { Footer } from './components/Footer';
 import { api } from './services/api';
@@ -35,6 +37,7 @@ export function App() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [userImageUrl, setUserImageUrl] = useState<string | null>(null);
   const [isExportingOutfit, setIsExportingOutfit] = useState<boolean>(false);
+  const [isGameOpen, setIsGameOpen] = useState<boolean>(false);
 
   // Modal states
   const [swapModalOpen, setSwapModalOpen] = useState<boolean>(false);
@@ -209,6 +212,7 @@ export function App() {
         hasResults={!!analysisResult}
         onReset={handleReset}
         onOpenBlueprint={() => setBlueprintModalOpen(true)}
+        onOpenGame={() => setIsGameOpen(true)}
       />
 
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -238,6 +242,7 @@ export function App() {
             quickQueries={quickQueries}
             onSubmit={handleAnalyze}
             isLoading={isLoading}
+            onOpenGame={() => setIsGameOpen(true)}
           />
         )}
 
@@ -300,6 +305,20 @@ export function App() {
               gender={analysisResult.gender}
               userImageUrl={userImageUrl}
               onCustomizeCategory={handleOpenSwap}
+              onOpenGame={() => setIsGameOpen(true)}
+            />
+
+            {/* Left Sidebar Sessions & Right Side 10+ Open-Source Sample Models Studio */}
+            <SessionInspirationExplorer
+              userImageUrl={userImageUrl}
+              currentGender={analysisResult.gender}
+              onSelectLookForTryOn={(look) => {
+                if (look.imageUrl) {
+                  setUserImageUrl(look.imageUrl);
+                }
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onOpenGame={() => setIsGameOpen(true)}
             />
 
             {/* Left/Top Profile Summary Card */}
@@ -397,6 +416,15 @@ export function App() {
           markdownContent={markdownBlueprint}
         />
       )}
+
+      {/* 4K Gamified Virtual Fitting & Makeover Studio Game */}
+      <GlamourStudioGame
+        isOpen={isGameOpen}
+        onClose={() => setIsGameOpen(false)}
+        userImageUrl={userImageUrl}
+        gender={analysisResult?.gender || 'Women'}
+        initialQuery={analysisResult?.query || 'Night Out & Gala'}
+      />
 
       <Footer />
     </div>

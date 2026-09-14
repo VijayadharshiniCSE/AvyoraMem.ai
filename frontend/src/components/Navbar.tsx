@@ -18,6 +18,7 @@ interface NavbarProps {
   hasResults: boolean;
   onReset: () => void;
   onOpenBlueprint: () => void;
+  onOpenGame?: () => void;
   isAiReady?: boolean;
 }
 
@@ -25,6 +26,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   hasResults,
   onReset,
   onOpenBlueprint,
+  onOpenGame,
   isAiReady = true,
 }) => {
   const { theme, toggleTheme, language, setLanguage, t, logoUrl, languages } = useThemeLanguage();
@@ -138,6 +140,18 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
             )}
           </div>
+
+          {/* 4K Game Studio Launcher Button */}
+          {onOpenGame && (
+            <button
+              onClick={onOpenGame}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-gold-500/20 via-pink-500/15 to-gold-500/20 hover:from-gold-500/30 hover:to-gold-500/30 border border-gold-500/40 text-gold-300 hover:text-white text-xs font-semibold shadow-md shadow-gold-500/10 hover:scale-105 active:scale-95 transition-all"
+              title="Launch 4K Virtual Fitting & Makeover Studio Game"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-gold-400 animate-pulse" />
+              <span className="font-mono font-bold tracking-tight">🎮 4K Game</span>
+            </button>
+          )}
 
           {/* Theme Switcher Toggle (Light / Dark) */}
           <button

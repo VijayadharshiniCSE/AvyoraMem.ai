@@ -24,6 +24,7 @@ interface HeroIngestionProps {
   quickQueries: string[];
   onSubmit: (file: File | null, presetId?: string, query?: string, gender?: string, previewUrl?: string | null) => void;
   isLoading: boolean;
+  onOpenGame?: () => void;
 }
 
 interface VisualSessionNeed {
@@ -95,6 +96,7 @@ export const HeroIngestion: React.FC<HeroIngestionProps> = ({
   quickQueries,
   onSubmit,
   isLoading,
+  onOpenGame,
 }) => {
   const { t } = useThemeLanguage();
 
@@ -241,6 +243,39 @@ export const HeroIngestion: React.FC<HeroIngestionProps> = ({
         <p className="text-sm sm:text-base text-platinum-400 max-w-2xl mx-auto font-sans leading-relaxed">
           {t('choose_session_sub')}
         </p>
+
+        {/* 4K Gamified Fitting & Makeover Studio Quick Banner */}
+        {onOpenGame && (
+          <div className="pt-2 max-w-xl mx-auto">
+            <button
+              type="button"
+              onClick={onOpenGame}
+              className="w-full group p-3.5 rounded-2xl bg-gradient-to-r from-gold-500/15 via-pink-500/10 to-gold-500/15 hover:from-gold-500/25 hover:to-gold-500/25 border border-gold-500/40 hover:border-gold-400 shadow-xl shadow-gold-500/10 flex items-center justify-between transition-all hover:scale-[1.01] active:scale-[0.99]"
+            >
+              <div className="flex items-center gap-3 text-left">
+                <span className="w-10 h-10 rounded-xl bg-gold-500/20 text-gold-300 border border-gold-500/40 flex items-center justify-center text-lg shadow-inner group-hover:rotate-12 transition-transform">
+                  🎮
+                </span>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs sm:text-sm font-bold text-white group-hover:text-gold-300 transition-colors">
+                      Play 4K Virtual Fitting &amp; Makeover Game
+                    </span>
+                    <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-gold-500/30 text-gold-200">
+                      NEW
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-platinum-300">
+                    Apply custom lipstick, blush &amp; equip outfits on your avatar before stepping out.
+                  </p>
+                </div>
+              </div>
+              <span className="text-xs font-mono font-bold text-gold-400 group-hover:translate-x-1 transition-transform pr-1">
+                Enter Studio →
+              </span>
+            </button>
+          </div>
+        )}
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
